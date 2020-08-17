@@ -25,6 +25,7 @@
     "axios": "^0.19.2",
     "core-js": "^3.6.5",
     "dayjs": "^1.8.24",
+    "epub.js": "^0.2.15",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-router-dom": "^5.0.1"
