@@ -4,6 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const resolve = require('./resolve');
 
 module.exports = {
+  target: 'electron-renderer',
   entry: [path.resolve(__dirname, '../index.js')],
   resolve,
   module: {

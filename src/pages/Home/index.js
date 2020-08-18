@@ -4,16 +4,15 @@
 
 import { PageHeader } from 'antd';
 import { useEffect } from 'react';
-
-// const fs = require('fs');
+import fs from 'fs';
 
 const Home = () => {
   useEffect(() => {
-    console.log(222);
+    console.log(fs);
   });
   return (
     <div>
-      <PageHeader title="Home" />
+      <PageHeader title="图书列表" />
     </div>
   );
 };

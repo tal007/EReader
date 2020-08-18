@@ -14,7 +14,7 @@ function createWindow() {
     minWidth: 1220,
     minHeight: 780,
     webPreferences: {
-      nodeIntegration: true,
+      nodeIntegration: true, // 不集成 Nodejs
     },
     title: app.getName(),
   };
@@ -224,7 +224,7 @@ if (process.platform === 'darwin') {
     {
       label: 'Bring All to Front',
       role: 'front',
-    },
+    }
   );
 
   addUpdateMenuItems(template[0].submenu, 1);
