@@ -13,6 +13,9 @@ function createWindow() {
     height: 780,
     minWidth: 1220,
     minHeight: 780,
+    webPreferences: {
+      nodeIntegration: true,
+    },
     title: app.getName(),
   };
 

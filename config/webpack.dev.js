@@ -18,7 +18,7 @@ const devConfig = {
     hot: true,
     // 启用gzip压缩预览
     compress: true,
-    open: true,
+    // open: true,
     // 解决 BrowserRouter 刷新 404 问题
     historyApiFallback: true,
   },
