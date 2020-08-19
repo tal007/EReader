@@ -10,7 +10,7 @@ const lessLoader = [
     loader: 'less-loader',
     options: {
       javascriptEnabled: true,
-      modifyVars: { '@primary-color': '#1DA57A' },
+      modifyVars: { '@primary-color': '#1890ff' },
     },
   },
 ];

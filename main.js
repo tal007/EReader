@@ -26,6 +26,7 @@ function createWindow() {
   mainWindow = new BrowserWindow(windowOptions);
   // mainWindow.loadURL(path.join('file://', __dirname, '/index.html'));
   mainWindow.loadURL('http://localhost:4000');
+  mainWindow.webContents.openDevTools();
 
   mainWindow.on('closed', () => {
     mainWindow = null;

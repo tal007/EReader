@@ -1,1 +1,1 @@
-React + Electron 骨架
+React + Electron 开发模式

@@ -1,11 +1,19 @@
-class Layout extends React.Component {
+import { Layout } from 'antd';
+import MySider from '../Sider';
+
+const { Content } = Layout;
+
+class MyLayout extends React.Component {
   render() {
     return (
-      <section className="layout" style={{ margin: 20 }}>
-        {this.props.children}
-      </section>
+      <Layout className="layout" style={{ margin: 20 }}>
+        <MySider />
+        <Layout>
+          <Content>{this.props.children}</Content>
+        </Layout>
+      </Layout>
     );
   }
 }
 
-export default Layout;
+export default MyLayout;
