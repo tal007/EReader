@@ -39,7 +39,7 @@ const Home = (props) => {
       // 兼容iOS
       method: 'default',
     });
-    console.log(rendition.themes);
+    // console.log(rendition.themes);
     rendition.display();
   });
 
