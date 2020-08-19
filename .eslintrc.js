@@ -50,6 +50,10 @@ module.exports = {
       // 箭头函数直接返回的时候不需要 大括号 {}
       "arrow-body-style": [2, "as-needed"],
       "no-alert":"error",
+      // 结尾不要标点
+      "comma-dangle": 0,
+      // = 后面可以换行
+      "operator-linebreak": 0,
 
       // 设置是否可以重新改变参数的值
       "no-param-reassign": 0,

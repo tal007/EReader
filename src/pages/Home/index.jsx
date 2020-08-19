@@ -1,67 +1,31 @@
-/**
- * * 首页 图书列表页面
- */
+import { useState } from 'react';
+import Epub from 'epubjs';
+import BookItem from './BookItem';
+import BookURL from '../../books/韭菜的自我修养李笑来首次公开投资原则.epub';
 
-import { PageHeader } from 'antd';
-import { useEffect } from 'react';
-import { withRouter } from 'react-router-dom';
-import Epubjs from 'epubjs';
-import fs from 'fs';
-import path from 'path';
+console.log(BookURL);
+const Home = () => {
+  const [cover, setCover] = useState('');
 
-const { join } = path;
+  console.log(Epub);
+  const Book = new Epub('https://s3.amazonaws.com/moby-dick/moby-dick.epub');
+  console.log(Book);
+  // const timer = setTimeout(() => {
+  //   if (cover) {
+  //     clearTimeout(timer);
+  //     return;
+  //   }
+  //   const url = Book.resources.replacementUrls[0];
+  //   setCover(url);
+  // }, 5000);
 
-const jsonFiles = [];
-function getJsonFiles(jsonPath) {
-  function findJsonFile(path) {
-    const files = fs.readdirSync(path);
-    files.forEach((item, index) => {
-      const fPath = join(path, item);
-      const stat = fs.statSync(fPath);
-      if (stat.isDirectory() === true) {
-        findJsonFile(fPath);
-      }
-      if (stat.isFile() === true) {
-        jsonFiles.push(fPath);
-      }
-    });
-  }
-  findJsonFile(jsonPath);
-}
-getJsonFiles('src/assets/books');
-
-const Home = (props) => {
-  useEffect(() => {
-    const Book = new Epubjs(jsonFiles[2]);
-    const rendition = Book.renderTo('read', {
-      width: 400,
-      height: 400,
-      // 兼容iOS
-      method: 'default',
-    });
-    console.log(rendition.themes);
-    rendition.display();
-  });
-
-  const renderBook = (file) => {
-    console.log(file);
-    // props.history.push('/render', {
-    //   file,
-    // });
-  };
   return (
-    <div>
-      <PageHeader title="全部图书" />
-      <div>
-        {jsonFiles.map((file) => (
-          <div key={file} onClick={() => renderBook(file)}>
-            {file}
-          </div>
-        ))}
-      </div>
-      <div id="read" style={{ width: 500, height: 800 }} />
-    </div>
+    <section className="all-books">
+      <BookItem cover={cover} bookUrl={BookURL} />
+
+      <div id="area" />
+    </section>
   );
 };
 
-export default withRouter(Home);
+export default Home;

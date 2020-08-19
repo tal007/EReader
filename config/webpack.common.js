@@ -28,6 +28,18 @@ module.exports = {
         ],
       },
       {
+        test: /\.(epub)$/,
+        exclude: /(node_modules|bower_components)/,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: 'static/books/[name].[ext]',
+            },
+          },
+        ],
+      },
+      {
         test: /\.(woff|woff2|eot|ttf|otf)$/,
         exclude: /(node_modules|bower_components)/,
         use: [

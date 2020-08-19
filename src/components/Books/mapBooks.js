@@ -1,4 +1,3 @@
-import Epub from 'epubjs';
 import fs from 'fs';
 import { join } from 'path';
 
@@ -14,13 +13,10 @@ function getJsonFiles(jsonPath) {
       }
       if (stat.isFile() === true) {
         jsonFiles.push(fPath);
-        const Book = new Epub(fPath);
-        console.log(Book);
       }
     });
   }
   findJsonFile(jsonPath);
-  console.log(jsonFiles);
 }
 
 getJsonFiles('src/assets/books');
