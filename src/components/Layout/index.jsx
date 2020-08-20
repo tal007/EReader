@@ -6,7 +6,7 @@ const { Content } = Layout;
 class MyLayout extends React.Component {
   render() {
     return (
-      <Layout className="layout" style={{ margin: 20 }}>
+      <Layout className="layout" style={{ height: '100%', padding: 20 }}>
         <MySider />
         <Layout>
           <Content>{this.props.children}</Content>

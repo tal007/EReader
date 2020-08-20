@@ -24,8 +24,12 @@ function createWindow() {
   }
 
   mainWindow = new BrowserWindow(windowOptions);
+  const startUrl =
+    process.env.NODE_ENV === 'development'
+      ? 'http://localhost:4000'
+      : path.join(__dirname, '/build/index.html');
   // mainWindow.loadURL(path.join('file://', __dirname, '/index.html'));
-  mainWindow.loadURL('http://localhost:4000');
+  mainWindow.loadURL(startUrl);
   mainWindow.webContents.openDevTools();
 
   mainWindow.on('closed', () => {

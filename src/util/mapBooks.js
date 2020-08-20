@@ -1,11 +1,13 @@
+/* eslint-disable */
+
 import fs from 'fs';
 import { join } from 'path';
 
+const jsonFiles = [];
 function getJsonFiles(jsonPath) {
-  const jsonFiles = [];
   function findJsonFile(path) {
     const files = fs.readdirSync(path);
-    files.forEach((item, index) => {
+    files.forEach((item) => {
       const fPath = join(path, item);
       const stat = fs.statSync(fPath);
       if (stat.isDirectory() === true) {
@@ -19,4 +21,6 @@ function getJsonFiles(jsonPath) {
   findJsonFile(jsonPath);
 }
 
-getJsonFiles('src/assets/books');
+getJsonFiles('src/books');
+
+export { jsonFiles };

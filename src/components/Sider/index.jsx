@@ -12,10 +12,16 @@ const MySider = () => {
   console.log('MySider loaded');
   return (
     <Sider className="custom-sider">
-      <Button type="primary" icon={<PlusOutlined />} block size="large">
+      <Button
+        className="import"
+        type="primary"
+        icon={<PlusOutlined />}
+        block
+        size="large"
+      >
         添加图书
       </Button>
-      <div>书架</div>
+      <h2 className="label">书架</h2>
       <Menu defaultSelectedKeys={['1']}>
         <Menu.Item key="1" icon={<SmileOutlined />}>
           全部图书
