@@ -1,0 +1,41 @@
+#read {
+  width: 100%;
+  height: 100%;
+}
+
+.book-read {
+  position: relative;
+  width: 100%;
+  height: 100%;
+
+  .read-wrapper {
+    position: absolute;
+    left: 10%;
+    top: 10%;
+    width: 80%;
+    height: 80%;
+    background: red;
+  }
+
+  .header {
+    background: var(--primary-color);
+    color: var(--base-text-color-withbg);
+    font-size: 20px;
+  }
+  .ant-page-header-heading-title {
+    color: var(--base-text-color-withbg);
+  }
+
+  .prev, .next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 30px;
+  }
+  .prev {
+    left: 3%;
+  }
+  .next {
+    right: 3%;
+  }
+}

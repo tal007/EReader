@@ -3,7 +3,7 @@ import { lazy } from 'react';
 import { Route, Switch } from 'react-router-dom';
 
 const Home = lazy(() => import('@pages/Home/index'));
-const RenderBookPage = lazy(() => import('@pages/RenderBook/index'));
+const BookRead = lazy(() => import('@pages/BookRead/index'));
 
 export const routes = [
   {
@@ -13,9 +13,9 @@ export const routes = [
     exact: true,
   },
   {
-    path: '/render',
-    component: RenderBookPage,
-    displayName: 'RenderBookPage',
+    path: '/read',
+    component: BookRead,
+    displayName: 'BookRead',
     exact: true,
   },
 ];
