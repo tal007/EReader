@@ -2,7 +2,7 @@ import { Col } from 'antd';
 import { useState } from 'react';
 import Epub from 'epubjs';
 import { getCoverURL } from '@util/bookUtil';
-import DefaultImage from '../../img/default.jpg';
+import DefaultImage from '@img/default.jpg';
 
 const BookItem = ({ BookURL }) => {
   const [cover, setCover] = useState('');

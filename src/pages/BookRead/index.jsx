@@ -1,4 +1,13 @@
-import { PageHeader, Button, Drawer, List, Tooltip } from 'antd';
+import {
+  PageHeader,
+  Button,
+  Drawer,
+  List,
+  Tooltip,
+  Descriptions,
+  Slider,
+  Select,
+} from 'antd';
 import {
   LeftCircleOutlined,
   RightCircleOutlined,
@@ -7,7 +16,12 @@ import {
   SettingOutlined,
   InfoCircleOutlined,
 } from '@ant-design/icons';
-import Epub from 'epubjs';
+import { Book as EBook } from 'epubjs';
+import { getCoverURL } from '@util/bookUtil';
+import DefaultImage from '@img/default.jpg';
+import { fonts, fontSize } from './default-config';
+
+const { Option } = Select;
 
 class BookRead extends React.Component {
   constructor(props) {
@@ -19,60 +33,62 @@ class BookRead extends React.Component {
       settinghVisible: false,
       listVisible: false,
       infoVisible: false,
+      bookInfo: {
+        name: '未知',
+        cover: DefaultImage,
+        author: '未知',
+        language: 'zh-CN',
+      },
     };
   }
 
   componentDidMount() {
     const THIS = this;
     const bookUrl = window.location.search.slice(9);
-    const Book = new Epub(bookUrl);
+    const Book = new EBook(bookUrl);
+    getCoverURL(Book, (result) => {
+      const { title, creator, language } = Book.packaging.metadata;
+      const { toc } = Book.navigation;
+      THIS.setState({
+        bookInfo: {
+          name: title,
+          cover: result,
+          author: creator,
+          language,
+        },
+        bookToc: toc,
+      });
+    });
     this.rendition = Book.renderTo('read', {
       width: '100%',
       height: '100%',
     });
+    console.log(this.rendition);
     this.rendition.display();
-    setTimeout(() => {
-      const { toc } = Book.navigation;
-      THIS.setState({
-        bookToc: toc,
-      });
-    }, 100);
-    window.addEventListener('keydown', this.keydown);
+    window.addEventListener('keydown', this.keydown.bind(this));
   }
-  onSearchOpen = () => {
-    this.setState({ searchVisible: true });
-  };
-  onSearchClose = () => {
-    this.setState({ searchVisible: false });
-  };
-  onSettingOpen = () => {
-    this.setState({ settinghVisible: true });
-  };
-  onSettingClose = () => {
-    this.setState({ settinghVisible: false });
-  };
-  onListOpen = () => {
-    this.setState({ listVisible: true });
-  };
-  onListClose = () => {
-    this.setState({ listVisible: false });
-  };
-  onInfoOpen = () => {
-    this.setState({ infoVisible: true });
-  };
-  onInfoClose = () => {
-    this.setState({ infoVisible: false });
+  setFontSize(size) {
+    this.rendition.themes.fontSize(`${size}px`);
+  }
+  setFontFamily(family) {
+    this.rendition.themes.font(family.label);
+  }
+  handleDrawer = (type, show) => {
+    this.setState({
+      [type]: show,
+    });
   };
   keydown(e) {
+    const THIS = this;
     const { keyCode } = e;
     switch (keyCode) {
       case 37:
       case 38:
-        this.prevPage();
+        THIS.prevPage();
         break;
       case 39:
       case 40:
-        this.nextPage();
+        THIS.nextPage();
         break;
       default:
     }
@@ -99,6 +115,7 @@ class BookRead extends React.Component {
       infoVisible,
       listVisible,
       settinghVisible,
+      bookInfo,
     } = this.state;
     return (
       <section className="book-read">
@@ -106,45 +123,42 @@ class BookRead extends React.Component {
           <div id="read" />
         </div>
         <PageHeader
-          title="name"
+          // title={bookInfo.name}
+          title={bookInfo.na}
           className="header"
           extra={[
-            <Tooltip title="搜索">
+            <Tooltip title="搜索" key="search">
               <Button
-                key="search"
                 shape="circle"
                 type="primary"
-                onClick={this.onSearchOpen}
+                onClick={() => this.handleDrawer('searchVisible', true)}
               >
                 <SearchOutlined />
               </Button>
             </Tooltip>,
-            <Tooltip title="设置">
+            <Tooltip title="设置" key="setting">
               <Button
-                key="setting"
                 shape="circle"
                 type="primary"
-                onClick={this.onSettingOpen}
+                onClick={() => this.handleDrawer('settinghVisible', true)}
               >
                 <SettingOutlined />
               </Button>
             </Tooltip>,
-            <Tooltip title="目录">
+            <Tooltip title="目录" key="list">
               <Button
-                key="list"
                 shape="circle"
                 type="primary"
-                onClick={this.onListOpen}
+                onClick={() => this.handleDrawer('listVisible', true)}
               >
                 <UnorderedListOutlined />
               </Button>
             </Tooltip>,
-            <Tooltip title="图书信息">
+            <Tooltip title="图书信息" key="info">
               <Button
-                key="info"
                 shape="circle"
                 type="primary"
-                onClick={this.onInfoOpen}
+                onClick={() => this.handleDrawer('infoVisible', true)}
               >
                 <InfoCircleOutlined />
               </Button>
@@ -161,7 +175,7 @@ class BookRead extends React.Component {
           width={350}
           title="搜索"
           placement="right"
-          onClose={this.onSearchClose}
+          onClose={() => this.handleDrawer('searchVisible', false)}
           visible={searchVisible}
         >
           <p>Some contents...</p>
@@ -172,18 +186,43 @@ class BookRead extends React.Component {
           width={350}
           title="设置"
           placement="right"
-          onClose={this.onSettingClose}
+          onClose={() => this.handleDrawer('settinghVisible', false)}
           visible={settinghVisible}
         >
-          <p>Some contents...</p>
-          <p>Some contents...</p>
-          <p>Some contents...</p>
+          <Descriptions bordered column={1}>
+            <Descriptions.Item label="字体大小">
+              <Slider
+                step={2}
+                max={36}
+                min={12}
+                defaultValue={16}
+                onChange={this.setFontSize.bind(this)}
+              />
+            </Descriptions.Item>
+            <Descriptions.Item label="字体">
+              <Select
+                labelInValue
+                defaultValue={{ value: 'heiti' }}
+                style={{ width: 120 }}
+                onChange={this.setFontFamily.bind(this)}
+              >
+                {fonts.map((font) => (
+                  <Option value={font.name} key={font.name}>
+                    {font.cname}
+                  </Option>
+                ))}
+              </Select>
+            </Descriptions.Item>
+            <Descriptions.Item label="主题">
+              {bookInfo.author}
+            </Descriptions.Item>
+          </Descriptions>
         </Drawer>
         <Drawer
           width={350}
           title="目录"
           placement="right"
-          onClose={this.onListClose}
+          onClose={() => this.handleDrawer('listVisible', false)}
           visible={listVisible}
         >
           <List>
@@ -198,34 +237,29 @@ class BookRead extends React.Component {
           width={350}
           title="图书信息"
           placement="right"
-          onClose={this.onInfoClose}
+          onClose={() => this.handleDrawer('infoVisible', false)}
           visible={infoVisible}
         >
-          <p>Some contents...</p>
-          <p>Some contents...</p>
-          <p>Some contents...</p>
+          <p>
+            <img
+              className="book-list-item-cover"
+              src={bookInfo.cover || DefaultImage}
+              alt="cover"
+            />
+          </p>
+          <Descriptions bordered column={1}>
+            <Descriptions.Item label="书名">{bookInfo.name}</Descriptions.Item>
+            <Descriptions.Item label="作者">
+              {bookInfo.author}
+            </Descriptions.Item>
+            <Descriptions.Item label="语言">
+              {bookInfo.language}
+            </Descriptions.Item>
+          </Descriptions>
         </Drawer>
       </section>
     );
   }
 }
-// const BookRead = () => {
-//   const [showToolbar, setShowToolbar] = useState(false);
-//   let navigation;
-//   const handleShowToolbar = () => {
-//     if (!navigation) {
-//       navigation = Book.navigation.toc;
-//     }
-//     setIsShowChapterList(false);
-//     setShowToolbar(!showToolbar);
-//   };
-
-//   const [isShowChapterList, setIsShowChapterList] = useState(false);
-//   const showChapterList = () => {
-//     setIsShowChapterList(!isShowChapterList);
-//   };
-
-//   );
-// };
 
 export default BookRead;
