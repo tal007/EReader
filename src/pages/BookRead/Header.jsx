@@ -8,7 +8,7 @@ import {
 
 const Header = ({ bookInfo, handleDrawer }) => (
   <PageHeader
-    title={bookInfo.name}
+    title={bookInfo.title}
     className="header"
     extra={[
       <Tooltip title="搜索" key="search">

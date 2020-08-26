@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { LeftCircleOutlined, RightCircleOutlined } from '@ant-design/icons';
 import { Book as EBook } from 'epubjs';
 import { getCoverURL } from '@util/bookUtil';
@@ -18,12 +19,9 @@ class BookRead extends React.Component {
       settinghVisible: false,
       listVisible: false,
       infoVisible: false,
-      bookInfo: {
-        name: '未知',
-        cover: DefaultImage,
-        author: '未知',
-        language: 'zh-CN',
-      },
+      metadata: {},
+      cover: DefaultImage,
+      searchData: [],
     };
   }
 
@@ -31,27 +29,23 @@ class BookRead extends React.Component {
     const THIS = this;
 
     const bookUrl = window.location.search.slice(9);
-    const Book = new EBook(bookUrl);
-    this.Book = Book;
+    const book = new EBook(bookUrl);
+    this.book = book;
 
-    this.rendition = Book.renderTo('read', {
+    this.rendition = book.renderTo('read', {
       width: '100%',
       height: '100%',
     });
 
-    let bookInfo = {};
-    Book.ready
+    book.ready
       .then(() => {
-        const { toc } = Book.navigation;
-        const { title, creator, language } = Book.packaging.metadata;
+        const { toc } = book.navigation;
+        const { metadata } = book.packaging;
+        const { title } = metadata;
         const bookStorage = storage.get(title);
-        bookInfo = {
-          name: title,
-          author: creator,
-          language,
-        };
         this.setState({
           bookToc: toc,
+          metadata,
         });
         if (bookStorage) {
           this.rendition.display(bookStorage);
@@ -60,10 +54,9 @@ class BookRead extends React.Component {
         }
       })
       .then(() => {
-        getCoverURL(Book, (result) => {
-          bookInfo.cover = result || DefaultImage;
+        getCoverURL(book, (result) => {
           THIS.setState({
-            bookInfo,
+            cover: result || DefaultImage,
             bookReady: true,
           });
         });
@@ -81,6 +74,11 @@ class BookRead extends React.Component {
       [type]: show,
     });
   };
+  setData = (type, data) => {
+    this.setState({
+      [type]: data
+    });
+  }
   savePosition = () => {
     const { name } = this.state.bookInfo;
     const currentLocation = this.rendition.currentLocation();
@@ -123,6 +121,16 @@ class BookRead extends React.Component {
       THIS.savePosition();
     });
   }
+  search(q) {
+    const { spineItems } = this.book.spine;
+    return Promise.all(
+      spineItems.map((spineItem) => spineItem
+          .load(this.book.load.bind(this.book))
+          .then(spineItem.find.bind(spineItem, q))
+          .finally(spineItem.unload.bind(spineItem)))
+    // eslint-disable-next-line prefer-spread
+    ).then((result) => Promise.resolve([].concat.apply([], result)));
+  }
 
   render() {
     const {
@@ -132,7 +140,9 @@ class BookRead extends React.Component {
       infoVisible,
       listVisible,
       settinghVisible,
-      bookInfo,
+      metadata,
+      cover,
+      searchData
     } = this.state;
     if (!bookReady) {
       return <BookSkeleton />;
@@ -143,7 +153,7 @@ class BookRead extends React.Component {
           <div id="read" />
         </div>
         <Header
-          bookInfo={bookInfo}
+          bookInfo={metadata}
           handleDrawer={this.handleDrawer.bind(this)}
         />
         <div className="prev">
@@ -153,7 +163,11 @@ class BookRead extends React.Component {
           <RightCircleOutlined onClick={this.nextPage.bind(this)} />
         </div>
         <Drawers
-          bookInfo={bookInfo}
+          bookInfo={metadata}
+          cover={cover}
+          searchData={searchData}
+          search={this.search.bind(this)}
+          setData={this.setData.bind(this)}
           handleDrawer={this.handleDrawer.bind(this)}
           jump={this.jump.bind(this)}
           searchVisible={searchVisible}
