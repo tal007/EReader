@@ -1,33 +1,18 @@
-import {
-  PageHeader,
-  Button,
-  Drawer,
-  List,
-  Tooltip,
-  Descriptions,
-  Slider,
-  Select,
-} from 'antd';
-import {
-  LeftCircleOutlined,
-  RightCircleOutlined,
-  UnorderedListOutlined,
-  SearchOutlined,
-  SettingOutlined,
-  InfoCircleOutlined,
-} from '@ant-design/icons';
+import { LeftCircleOutlined, RightCircleOutlined } from '@ant-design/icons';
 import { Book as EBook } from 'epubjs';
 import { getCoverURL } from '@util/bookUtil';
 import DefaultImage from '@img/default.jpg';
-import { fonts, fontSize } from './default-config';
-
-const { Option } = Select;
+import storage from '@util/storage';
+import BookSkeleton from './BookSkeleton';
+import Header from './Header';
+import Drawers from './Drawers';
 
 class BookRead extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      bookReady: false,
       bookToc: [],
       searchVisible: false,
       settinghVisible: false,
@@ -44,27 +29,45 @@ class BookRead extends React.Component {
 
   componentDidMount() {
     const THIS = this;
+
     const bookUrl = window.location.search.slice(9);
     const Book = new EBook(bookUrl);
-    getCoverURL(Book, (result) => {
-      const { title, creator, language } = Book.packaging.metadata;
-      const { toc } = Book.navigation;
-      THIS.setState({
-        bookInfo: {
-          name: title,
-          cover: result,
-          author: creator,
-          language,
-        },
-        bookToc: toc,
-      });
-    });
+    this.Book = Book;
+
     this.rendition = Book.renderTo('read', {
       width: '100%',
       height: '100%',
     });
-    console.log(this.rendition);
-    this.rendition.display();
+
+    let bookInfo = {};
+    Book.ready
+      .then(() => {
+        const { toc } = Book.navigation;
+        const { title, creator, language } = Book.packaging.metadata;
+        const bookStorage = storage.get(title);
+        bookInfo = {
+          name: title,
+          author: creator,
+          language,
+        };
+        this.setState({
+          bookToc: toc,
+        });
+        if (bookStorage) {
+          this.rendition.display(bookStorage);
+        } else {
+          this.rendition.display();
+        }
+      })
+      .then(() => {
+        getCoverURL(Book, (result) => {
+          bookInfo.cover = result || DefaultImage;
+          THIS.setState({
+            bookInfo,
+            bookReady: true,
+          });
+        });
+      });
     window.addEventListener('keydown', this.keydown.bind(this));
   }
   setFontSize(size) {
@@ -77,6 +80,11 @@ class BookRead extends React.Component {
     this.setState({
       [type]: show,
     });
+  };
+  savePosition = () => {
+    const { name } = this.state.bookInfo;
+    const currentLocation = this.rendition.currentLocation();
+    storage.set(name, currentLocation.start.cfi);
   };
   keydown(e) {
     const THIS = this;
@@ -95,21 +103,30 @@ class BookRead extends React.Component {
   }
   prevPage() {
     if (this.rendition) {
-      this.rendition.prev();
+      this.rendition.prev().then(() => {
+        this.savePosition();
+      });
     }
   }
 
   nextPage() {
     if (this.rendition) {
-      this.rendition.next();
+      this.rendition.next().then(() => {
+        this.savePosition();
+      });
     }
   }
   jump(href) {
-    this.rendition.display(href);
+    const THIS = this;
+    this.handleDrawer('listVisible', false);
+    this.rendition.display(href).then(() => {
+      THIS.savePosition();
+    });
   }
 
   render() {
     const {
+      bookReady,
       bookToc,
       searchVisible,
       infoVisible,
@@ -117,53 +134,17 @@ class BookRead extends React.Component {
       settinghVisible,
       bookInfo,
     } = this.state;
+    if (!bookReady) {
+      return <BookSkeleton />;
+    }
     return (
       <section className="book-read">
         <div className="read-wrapper">
           <div id="read" />
         </div>
-        <PageHeader
-          // title={bookInfo.name}
-          title={bookInfo.na}
-          className="header"
-          extra={[
-            <Tooltip title="搜索" key="search">
-              <Button
-                shape="circle"
-                type="primary"
-                onClick={() => this.handleDrawer('searchVisible', true)}
-              >
-                <SearchOutlined />
-              </Button>
-            </Tooltip>,
-            <Tooltip title="设置" key="setting">
-              <Button
-                shape="circle"
-                type="primary"
-                onClick={() => this.handleDrawer('settinghVisible', true)}
-              >
-                <SettingOutlined />
-              </Button>
-            </Tooltip>,
-            <Tooltip title="目录" key="list">
-              <Button
-                shape="circle"
-                type="primary"
-                onClick={() => this.handleDrawer('listVisible', true)}
-              >
-                <UnorderedListOutlined />
-              </Button>
-            </Tooltip>,
-            <Tooltip title="图书信息" key="info">
-              <Button
-                shape="circle"
-                type="primary"
-                onClick={() => this.handleDrawer('infoVisible', true)}
-              >
-                <InfoCircleOutlined />
-              </Button>
-            </Tooltip>,
-          ]}
+        <Header
+          bookInfo={bookInfo}
+          handleDrawer={this.handleDrawer.bind(this)}
         />
         <div className="prev">
           <LeftCircleOutlined onClick={this.prevPage.bind(this)} />
@@ -171,92 +152,18 @@ class BookRead extends React.Component {
         <div className="next">
           <RightCircleOutlined onClick={this.nextPage.bind(this)} />
         </div>
-        <Drawer
-          width={350}
-          title="搜索"
-          placement="right"
-          onClose={() => this.handleDrawer('searchVisible', false)}
-          visible={searchVisible}
-        >
-          <p>Some contents...</p>
-          <p>Some contents...</p>
-          <p>Some contents...</p>
-        </Drawer>
-        <Drawer
-          width={350}
-          title="设置"
-          placement="right"
-          onClose={() => this.handleDrawer('settinghVisible', false)}
-          visible={settinghVisible}
-        >
-          <Descriptions bordered column={1}>
-            <Descriptions.Item label="字体大小">
-              <Slider
-                step={2}
-                max={36}
-                min={12}
-                defaultValue={16}
-                onChange={this.setFontSize.bind(this)}
-              />
-            </Descriptions.Item>
-            <Descriptions.Item label="字体">
-              <Select
-                labelInValue
-                defaultValue={{ value: 'heiti' }}
-                style={{ width: 120 }}
-                onChange={this.setFontFamily.bind(this)}
-              >
-                {fonts.map((font) => (
-                  <Option value={font.name} key={font.name}>
-                    {font.cname}
-                  </Option>
-                ))}
-              </Select>
-            </Descriptions.Item>
-            <Descriptions.Item label="主题">
-              {bookInfo.author}
-            </Descriptions.Item>
-          </Descriptions>
-        </Drawer>
-        <Drawer
-          width={350}
-          title="目录"
-          placement="right"
-          onClose={() => this.handleDrawer('listVisible', false)}
-          visible={listVisible}
-        >
-          <List>
-            {bookToc.map((toc) => (
-              <List.Item key={toc.id} onClick={() => this.jump(toc.href)}>
-                {toc.label}
-              </List.Item>
-            ))}
-          </List>
-        </Drawer>
-        <Drawer
-          width={350}
-          title="图书信息"
-          placement="right"
-          onClose={() => this.handleDrawer('infoVisible', false)}
-          visible={infoVisible}
-        >
-          <p>
-            <img
-              className="book-list-item-cover"
-              src={bookInfo.cover || DefaultImage}
-              alt="cover"
-            />
-          </p>
-          <Descriptions bordered column={1}>
-            <Descriptions.Item label="书名">{bookInfo.name}</Descriptions.Item>
-            <Descriptions.Item label="作者">
-              {bookInfo.author}
-            </Descriptions.Item>
-            <Descriptions.Item label="语言">
-              {bookInfo.language}
-            </Descriptions.Item>
-          </Descriptions>
-        </Drawer>
+        <Drawers
+          bookInfo={bookInfo}
+          handleDrawer={this.handleDrawer.bind(this)}
+          jump={this.jump.bind(this)}
+          searchVisible={searchVisible}
+          settinghVisible={settinghVisible}
+          listVisible={listVisible}
+          infoVisible={infoVisible}
+          bookToc={bookToc}
+          setFontFamily={this.setFontFamily.bind(this)}
+          setFontSize={this.setFontFamily.bind(this)}
+        />
       </section>
     );
   }

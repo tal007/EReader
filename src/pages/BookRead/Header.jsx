@@ -1,4 +1,4 @@
-import { PageHeader, Button, Drawer } from 'antd';
+import { PageHeader, Button, Tooltip } from 'antd';
 import {
   UnorderedListOutlined,
   SearchOutlined,
@@ -6,23 +6,47 @@ import {
   InfoCircleOutlined,
 } from '@ant-design/icons';
 
-const Header = () => (
+const Header = ({ bookInfo, handleDrawer }) => (
   <PageHeader
-    title="name"
+    title={bookInfo.name}
     className="header"
     extra={[
-      <Button shape="circle" type="primary">
-        <SearchOutlined />
-      </Button>,
-      <Button shape="circle" type="primary">
-        <SettingOutlined />
-      </Button>,
-      <Button shape="circle" type="primary">
-        <UnorderedListOutlined />
-      </Button>,
-      <Button shape="circle" type="primary">
-        <InfoCircleOutlined />
-      </Button>,
+      <Tooltip title="搜索" key="search">
+        <Button
+          shape="circle"
+          type="primary"
+          onClick={() => handleDrawer('searchVisible', true)}
+        >
+          <SearchOutlined />
+        </Button>
+      </Tooltip>,
+      <Tooltip title="设置" key="setting">
+        <Button
+          shape="circle"
+          type="primary"
+          onClick={() => handleDrawer('settinghVisible', true)}
+        >
+          <SettingOutlined />
+        </Button>
+      </Tooltip>,
+      <Tooltip title="目录" key="list">
+        <Button
+          shape="circle"
+          type="primary"
+          onClick={() => handleDrawer('listVisible', true)}
+        >
+          <UnorderedListOutlined />
+        </Button>
+      </Tooltip>,
+      <Tooltip title="图书信息" key="info">
+        <Button
+          shape="circle"
+          type="primary"
+          onClick={() => handleDrawer('infoVisible', true)}
+        >
+          <InfoCircleOutlined />
+        </Button>
+      </Tooltip>,
     ]}
   />
 );
