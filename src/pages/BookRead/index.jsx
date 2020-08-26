@@ -80,9 +80,9 @@ class BookRead extends React.Component {
     });
   }
   savePosition = () => {
-    const { name } = this.state.bookInfo;
+    const { title } = this.state.metadata;
     const currentLocation = this.rendition.currentLocation();
-    storage.set(name, currentLocation.start.cfi);
+    storage.set(title, currentLocation.start.cfi);
   };
   keydown(e) {
     const THIS = this;
