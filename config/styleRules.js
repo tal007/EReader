@@ -1,3 +1,5 @@
+const path = require('path');
+
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const isDEV = process.env.NODE_ENV === 'development';
@@ -10,7 +12,13 @@ const lessLoader = [
     loader: 'less-loader',
     options: {
       javascriptEnabled: true,
-      modifyVars: { '@primary-color': '#1890ff' },
+    },
+  },
+  {
+    loader: 'style-resources-loader',
+    options: {
+      patterns: path.resolve(__dirname, 'src/styles/theme.less'),
+      injector: 'append',
     },
   },
 ];

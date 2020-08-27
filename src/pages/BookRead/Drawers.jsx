@@ -30,6 +30,26 @@ const Drawers = ({
   setData,
 }) => {
   const [searchText, setSearchText] = useState('');
+
+  function recursionToc(toc) {
+    const { subitems } = toc;
+    if (subitems && subitems.length) {
+      return (
+        <List
+          key={toc.id}
+          header={<span className="list-header-text">{toc.label}</span>}
+        >
+          {subitems.map((subitem) => recursionToc(subitem))}
+        </List>
+      );
+    }
+    return (
+      <List.Item key={toc.id} onClick={() => jump(toc.href)}>
+        {toc.label}
+      </List.Item>
+    );
+  }
+
   return (
     <>
       <Drawer
@@ -100,7 +120,7 @@ const Drawers = ({
               ))}
             </Select>
           </Descriptions.Item>
-          <Descriptions.Item label="主题">{bookInfo.creator}</Descriptions.Item>
+          {/* <Descriptions.Item label="主题">{bookInfo.creator}</Descriptions.Item> */}
         </Descriptions>
       </Drawer>
       <Drawer
@@ -110,12 +130,8 @@ const Drawers = ({
         onClose={() => handleDrawer('listVisible', false)}
         visible={listVisible}
       >
-        <List>
-          {bookToc.map((toc) => (
-            <List.Item key={toc.id} onClick={() => jump(toc.href)}>
-              {toc.label}
-            </List.Item>
-          ))}
+        <List header={<span className="list-header-text">总目录</span>}>
+          {bookToc.map((toc) => recursionToc(toc))}
         </List>
       </Drawer>
       <Drawer
