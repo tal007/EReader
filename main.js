@@ -31,7 +31,7 @@ function createWindow() {
       : path.join(__dirname, '/build/index.html');
   // mainWindow.loadURL(path.join('file://', __dirname, '/index.html'));
   mainWindow.loadURL(startUrl);
-  mainWindow.webContents.openDevTools();
+  // mainWindow.webContents.openDevTools();
 
   mainWindow.on('closed', () => {
     mainWindow = null;

@@ -19,5 +19,6 @@ thumb
 sketch
 
 build/
+build-electron/
 
 # End of https://www.gitignore.io/api/react
