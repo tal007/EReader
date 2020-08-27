@@ -1,0 +1,14 @@
+directories:
+  output: build-electron
+  buildResources: build
+appId: com.ereader.tal
+productName: E-Reader
+extends: null
+files:
+  - filter:
+      - ./build/**/*
+      - ./main.js
+      - ./package.json
+win:
+  icon: src/asset/icon.png
+electronVersion: 8.5.0
