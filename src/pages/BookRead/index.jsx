@@ -32,11 +32,6 @@ class BookRead extends React.Component {
     const book = new EBook(bookUrl);
     this.book = book;
 
-    this.rendition = book.renderTo('read', {
-      width: '100%',
-      height: '100%',
-    });
-
     book.ready
       .then(() => {
         const { toc } = book.navigation;
@@ -47,11 +42,18 @@ class BookRead extends React.Component {
           bookToc: toc,
           metadata,
         });
-        if (bookStorage) {
-          this.rendition.display(bookStorage);
-        } else {
-          this.rendition.display();
-        }
+        // 添加延时 有时候可能会报 https://github.com/futurepress/epub.js/issues/917
+        setTimeout(() => {
+          this.rendition = book.renderTo('read', {
+            width: '100%',
+            height: '100%',
+          });
+          if (bookStorage) {
+            this.rendition.display(bookStorage);
+          } else {
+            this.rendition.display();
+          }
+        }, 100);
       })
       .then(() => {
         getCoverURL(book, (result) => {
