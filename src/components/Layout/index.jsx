@@ -36,7 +36,9 @@ class MyLayout extends React.Component {
 
   render() {
     return (
-      <BookListContext.Provider value={this.state.books}>
+      <BookListContext.Provider
+        value={{ books: this.state.books, setBooks: this.setBooks }}
+      >
         <Layout className="layout" style={containerStyle}>
           <Route
             path="/"

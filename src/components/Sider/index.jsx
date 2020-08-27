@@ -8,6 +8,7 @@ import {
 import { remote } from 'electron';
 import bookDb from '@util/bookDb';
 import Epub from 'epubjs';
+import { getCoverURL } from '@util/bookUtil';
 
 const { Sider } = Layout;
 
@@ -31,7 +32,7 @@ class MySider extends React.PureComponent {
       const { metadata } = book.packaging;
       const { title } = metadata;
 
-      book.coverUrl().then((coverUrl) => {
+      getCoverURL(book, (coverUrl) => {
         bookDb.init(() => {
           bookDb.addBook(
             {
@@ -44,8 +45,6 @@ class MySider extends React.PureComponent {
             },
             () => {
               bookDb.getBooks((data) => {
-                console.log(data);
-                console.log(_this.props);
                 _this.props.setBooks(data);
               });
             }

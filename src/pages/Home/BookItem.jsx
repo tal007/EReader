@@ -1,8 +1,9 @@
 import { Col, Button, Modal } from 'antd';
 import { DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import DefaultImage from '@img/default.jpg';
+import bookDb from '@util/bookDb';
 
-const BookItem = ({ data }) => {
+const BookItem = ({ data, setBooks }) => {
   const { title, coverUrl, bookpath } = data;
   const openBook = () => {
     window.open(`/read?bookUrl=${bookpath}`);
@@ -13,11 +14,16 @@ const BookItem = ({ data }) => {
     Modal.confirm({
       icon: <ExclamationCircleOutlined />,
       content: '确定要删除此书么',
+      okText: '确认',
+      cancelText: '取消',
       onOk() {
-        console.log('OK');
-      },
-      onCancel() {
-        console.log('Cancel');
+        bookDb.init(() => {
+          bookDb.deleteBook(data.id, () => {
+            bookDb.getBooks((newdata) => {
+              setBooks(newdata);
+            });
+          });
+        });
       },
     });
   };
