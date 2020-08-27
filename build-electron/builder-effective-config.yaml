@@ -10,5 +10,5 @@ files:
       - ./main.js
       - ./package.json
 win:
-  icon: src/asset/icon.png
+  icon: src/asset/favicon.ico
 electronVersion: 8.5.0

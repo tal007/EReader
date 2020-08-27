@@ -6,7 +6,7 @@ import Layout from '@comp/Layout';
 import Routes from './Routes';
 
 const App = () => (
-  <BrowserRouter basename="/build">
+  <BrowserRouter>
     <Layout>
       <Routes />
     </Layout>
