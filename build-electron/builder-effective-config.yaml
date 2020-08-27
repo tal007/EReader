@@ -10,5 +10,12 @@ files:
       - ./main.js
       - ./package.json
 win:
-  icon: src/asset/favicon.ico
+  icon: favicon.ico
+nsis:
+  oneClick: false
+  allowElevation: true
+  allowToChangeInstallationDirectory: true
+  installerIcon: .favicon.ico
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
 electronVersion: 8.5.0

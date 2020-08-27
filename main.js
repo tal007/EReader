@@ -2,6 +2,7 @@ const electron = require('electron');
 
 const { app, BrowserWindow, Menu } = electron;
 const path = require('path');
+const url = require('url');
 
 if (process.mas) app.setName('Your Electron App Name');
 
@@ -25,12 +26,19 @@ function createWindow() {
   }
 
   mainWindow = new BrowserWindow(windowOptions);
-  const startUrl =
-    process.env.NODE_ENV === 'development'
-      ? 'http://localhost:4000'
-      : path.join(__dirname, '/build/index.html');
+
+  if (process.env.NODE_ENV === 'development') {
+    mainWindow.loadURL('http://localhost:4000');
+  } else {
+    mainWindow.loadURL(
+      url.format({
+        pathname: path.join(__dirname, '/build/index.html'), // 修改
+        protocol: 'file:',
+        slashes: true,
+      })
+    );
+  }
   // mainWindow.loadURL(path.join('file://', __dirname, '/index.html'));
-  mainWindow.loadURL(startUrl);
   // mainWindow.webContents.openDevTools();
 
   mainWindow.on('closed', () => {

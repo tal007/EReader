@@ -1,6 +1,6 @@
 {
   "name": "ereader",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Epub reader",
   "main": "main.js",
   "scripts": {
@@ -12,7 +12,7 @@
     "commit": "git-cz",
     "start": "cross-env NODE_ENV=development electron .",
     "start-electron-prod": "electron .",
-    "build-electron": "electron-builder"
+    "build-e": "electron-builder"
   },
   "config": {
     "commitizen": {
@@ -77,9 +77,9 @@
     "webpack-dev-server": "^3.10.3",
     "webpack-merge": "^4.2.2"
   },
-  "homepage": "./",
+  "homepage": ".",
   "build": {
-    "appId": "com.ereader.tal",
+    "appId": "com.ereader.app",
     "productName": "E-Reader",
     "extends": null,
     "directories": {
@@ -91,7 +91,15 @@
       "./package.json"
     ],
     "win": {
-      "icon": "src/asset/favicon.ico"
+      "icon": "favicon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowElevation": true,
+      "allowToChangeInstallationDirectory": true,
+      "installerIcon": ".favicon.ico",
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
     }
   }
 }
