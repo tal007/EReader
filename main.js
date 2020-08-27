@@ -15,6 +15,7 @@ function createWindow() {
     minHeight: 780,
     webPreferences: {
       nodeIntegration: true, // 不集成 Nodejs
+      webSecurity: false,
     },
     title: app.getName(),
   };

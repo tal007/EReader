@@ -1,26 +1,14 @@
-/* eslint-disable */
+import bookDb from '@util/bookDb';
 
-import fs from 'fs';
-import { join } from 'path';
-
-const jsonFiles = [];
-function getJsonFiles(jsonPath) {
-  function findJsonFile(path) {
-    const files = fs.readdirSync(path);
-    files.forEach((item) => {
-      const fPath = join(path, item);
-      const stat = fs.statSync(fPath);
-      if (stat.isDirectory() === true) {
-        findJsonFile(fPath);
-      }
-      if (stat.isFile() === true) {
-        jsonFiles.push(fPath);
-      }
-    });
-  }
-  findJsonFile(jsonPath);
-}
-
-getJsonFiles('src/books');
-
-export { jsonFiles };
+bookDb.init(() => {
+  bookDb.getBooks((data) => {
+    console.log('获取所有书籍');
+    console.log(data);
+    // 添加示例图书
+    // const isInit = this.$storage.get('init', false);
+    // if (!isInit) {
+    //   this.$storage.set('init', true);
+    //   this.addBookFromUrl('https://img1.yunser.com/epub/test.epub');
+    // }
+  });
+});

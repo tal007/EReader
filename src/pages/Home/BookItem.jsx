@@ -1,21 +1,11 @@
-import { useState } from 'react';
 import { Col, Button, Modal } from 'antd';
 import { DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
-import Epub from 'epubjs';
-import { getCoverURL } from '@util/bookUtil';
 import DefaultImage from '@img/default.jpg';
 
-const BookItem = ({ BookURL }) => {
-  const [cover, setCover] = useState('');
-  const [bookName, setBookName] = useState('');
-  const Book = new Epub(BookURL);
-  getCoverURL(Book, (result) => {
-    const { title } = Book.packaging.metadata;
-    setCover(result);
-    setBookName(title);
-  });
+const BookItem = ({ data }) => {
+  const { title, coverUrl, bookpath } = data;
   const openBook = () => {
-    window.open(`/read?bookUrl=${BookURL}`);
+    window.open(`/read?bookUrl=${bookpath}`);
   };
   const deleteBook = (event) => {
     event.preventDefault();
@@ -41,10 +31,10 @@ const BookItem = ({ BookURL }) => {
       />
       <img
         className="book-list-item-cover"
-        src={cover || DefaultImage}
+        src={coverUrl || DefaultImage}
         alt="cover"
       />
-      <p className="book-list-item-name">{bookName}</p>
+      <p className="book-list-item-name">{title}</p>
     </Col>
   );
 };

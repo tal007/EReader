@@ -1,13 +1,23 @@
 import { Row } from 'antd';
-import { jsonFiles } from '@util/mapBooks';
+import { BookListContext } from '@comp/Layout';
 import BookItem from './BookItem';
 
-const Home = () => (
-  <Row className="book-list-container">
-    {jsonFiles.map((BookURL) => (
-      <BookItem key={BookURL} BookURL={BookURL} />
-    ))}
-  </Row>
-);
-
+class Home extends React.Component {
+  render() {
+    return (
+      <BookListContext.Consumer>
+        {(books) => {
+          console.log(books);
+          return (
+            <Row className="book-list-container">
+              {books.map((data) => (
+                <BookItem key={data.id} data={data} />
+              ))}
+            </Row>
+          );
+        }}
+      </BookListContext.Consumer>
+    );
+  }
+}
 export default Home;
