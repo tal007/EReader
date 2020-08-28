@@ -4,12 +4,16 @@ import {
   SearchOutlined,
   SettingOutlined,
   InfoCircleOutlined,
+  LeftOutlined,
 } from '@ant-design/icons';
+import { withRouter } from 'react-router-dom';
 
-const Header = ({ bookInfo, handleDrawer }) => (
+const Header = ({ bookInfo, handleDrawer, ...props }) => (
   <PageHeader
     title={bookInfo.title}
     className="header"
+    onBack={() => props.history.goBack()}
+    backIcon={<LeftOutlined className="back-icon" />}
     extra={[
       <Tooltip title="搜索" key="search">
         <Button
@@ -51,4 +55,4 @@ const Header = ({ bookInfo, handleDrawer }) => (
   />
 );
 
-export default Header;
+export default withRouter(Header);

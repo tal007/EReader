@@ -2,12 +2,10 @@ import { Col, Button, Modal } from 'antd';
 import { DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import DefaultImage from '@img/default.jpg';
 import bookDb from '@util/bookDb';
+import { Link } from 'react-router-dom';
 
 const BookItem = ({ data, setBooks }) => {
   const { title, coverUrl, bookpath } = data;
-  const openBook = () => {
-    window.open(`/read?bookUrl=${bookpath}`);
-  };
   const deleteBook = (event) => {
     event.preventDefault();
     event.stopPropagation();
@@ -28,19 +26,26 @@ const BookItem = ({ data, setBooks }) => {
     });
   };
   return (
-    <Col className="book-list-item" onClick={openBook}>
-      <Button
-        onClick={deleteBook}
-        className="delete"
-        shape="circle"
-        icon={<DeleteOutlined />}
-      />
-      <img
-        className="book-list-item-cover"
-        src={coverUrl || DefaultImage}
-        alt="cover"
-      />
-      <p className="book-list-item-name">{title}</p>
+    <Col className="book-list-item">
+      <Link
+        to={{
+          pathname: '/read',
+          search: `?bookUrl=${bookpath}`,
+        }}
+      >
+        <Button
+          onClick={deleteBook}
+          className="delete"
+          shape="circle"
+          icon={<DeleteOutlined />}
+        />
+        <img
+          className="book-list-item-cover"
+          src={coverUrl || DefaultImage}
+          alt="cover"
+        />
+        <p className="book-list-item-name">{title}</p>
+      </Link>
     </Col>
   );
 };

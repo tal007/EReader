@@ -28,7 +28,7 @@ class BookRead extends React.Component {
   componentDidMount() {
     const THIS = this;
 
-    const bookUrl = window.location.search.slice(9);
+    const bookUrl = window.location.hash.slice(15);
     const book = new EBook(bookUrl);
     this.book = book;
 
@@ -159,10 +159,10 @@ class BookRead extends React.Component {
           handleDrawer={this.handleDrawer.bind(this)}
         />
         <div className="prev">
-          <LeftCircleOutlined onClick={this.prevPage.bind(this)} />
+          <LeftCircleOutlined className="icon" onClick={this.prevPage.bind(this)} />
         </div>
         <div className="next">
-          <RightCircleOutlined onClick={this.nextPage.bind(this)} />
+          <RightCircleOutlined className="icon" onClick={this.nextPage.bind(this)} />
         </div>
         <Drawers
           bookInfo={metadata}

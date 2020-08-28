@@ -1,7 +1,7 @@
 directories:
   output: build-electron
   buildResources: build
-appId: com.ereader.tal
+appId: com.ereader.app
 productName: E-Reader
 extends: null
 files:
@@ -10,12 +10,12 @@ files:
       - ./main.js
       - ./package.json
 win:
-  icon: favicon.ico
+  icon: icon.ico
 nsis:
   oneClick: false
   allowElevation: true
   allowToChangeInstallationDirectory: true
-  installerIcon: .favicon.ico
+  installerIcon: icon.ico
   createDesktopShortcut: true
   createStartMenuShortcut: true
 electronVersion: 8.5.0

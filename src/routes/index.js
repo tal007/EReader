@@ -3,8 +3,9 @@ import { Router } from 'react-router-dom';
 import { hot } from 'react-hot-loader';
 import Loading from '@comp/Loading';
 import Layout from '@comp/Layout';
-import createHistory from 'history/createHashHistory';
 import Routes from './Routes';
+
+const createHistory = require('history').createHashHistory;
 
 const history = createHistory();
 
