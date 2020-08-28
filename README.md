@@ -4,3 +4,4 @@
 
 目前使用的是读取本地的 epub 文件，数据只保存了封面以及title，阅读的时候会再读取一次文件，所以不要移动文件位置，如果移动了需要重新导入。
 
+下载地址：[https://github.com/tal007/EReader/releases/tag/1.0.0](https://github.com/tal007/EReader/releases/tag/1.0.0)
