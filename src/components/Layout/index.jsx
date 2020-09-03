@@ -1,3 +1,4 @@
+/* eslint-disable implicit-arrow-linebreak */
 import { Layout } from 'antd';
 import { Route } from 'react-router-dom';
 import bookDb from '@util/bookDb';
@@ -35,6 +36,7 @@ class MyLayout extends React.Component {
   };
 
   render() {
+    const { children } = this.props;
     return (
       <BookListContext.Provider
         value={{ books: this.state.books, setBooks: this.setBooks }}
@@ -46,7 +48,16 @@ class MyLayout extends React.Component {
             component={() => <MySider setBooks={this.setBooks} />}
           />
           <Layout>
-            <Content>{this.props.children}</Content>
+            <Content>
+              {React.Children.map(
+                children,
+                (child) =>
+                  React.cloneElement(child, {
+                    setBooks: this.setBooks,
+                  })
+                // eslint-disable-next-line function-paren-newline
+              )}
+            </Content>
           </Layout>
         </Layout>
       </BookListContext.Provider>

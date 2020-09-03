@@ -1,6 +1,7 @@
 /* eslint-disable */
 
-let g_store
+let g_store;
+const NAME = 'books'
 
 class BookDb {
 
@@ -10,7 +11,7 @@ class BookDb {
     }
 
     init(cb) {
-        var request = indexedDB.open('dbName3', 1);  // 打开 dbName 数据库
+        var request = indexedDB.open(NAME, 1);  // 打开 dbName 数据库
         request.onerror = function(e){              // 监听连接数据库失败时执行
             console.log('连接数据库失败');
         }

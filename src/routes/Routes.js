@@ -20,14 +20,14 @@ export const routes = [
   },
 ];
 
-const Routes = () => (
+const Routes = (props) => (
   <Switch>
     {routes.map((value) => (
       <Route
         key={value.path}
         path={value.path}
         exact={!!value.exact}
-        component={value.component}
+        component={() => <value.component {...props} />}
       />
     ))}
   </Switch>
