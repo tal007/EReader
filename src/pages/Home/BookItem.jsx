@@ -5,7 +5,7 @@ import bookDb from '@util/bookDb';
 import { Link } from 'react-router-dom';
 
 const BookItem = ({ data, setBooks }) => {
-  const { title, coverUrl, bookpath } = data;
+  const { title, coverUrl, filePath } = data;
   const deleteBook = (event) => {
     event.preventDefault();
     event.stopPropagation();
@@ -30,7 +30,7 @@ const BookItem = ({ data, setBooks }) => {
       <Link
         to={{
           pathname: '/read',
-          search: `?bookUrl=${bookpath}`,
+          search: `?bookUrl=${filePath}`,
         }}
       >
         <Button

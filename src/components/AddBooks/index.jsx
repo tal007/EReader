@@ -39,6 +39,7 @@ class AddBooks extends React.PureComponent {
               },
               () => {
                 bookDb.getBooks((data) => {
+                  console.log(data);
                   _this.props.setBooks(data);
                 });
               }
